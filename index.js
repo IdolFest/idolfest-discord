@@ -1,3 +1,3 @@
-import { Discord } from "./lib/options.js"
+import Discord from "./lib/discord.js"
 
-console.log(`Discord: ${Discord.botToken}`)
+console.log(`Discord: ${Discord}`)

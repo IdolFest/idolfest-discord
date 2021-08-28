@@ -1,19 +1,31 @@
 {
-  "name": "nw-idolfest-discord",
-  "version": "1.0.0",
-  "description": "Discord bot for NW IdolFest",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/NWIdolFest/nw-idolfest-discord.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/NWIdolFest/nw-idolfest-discord/issues"
-  },
-  "homepage": "https://github.com/NWIdolFest/nw-idolfest-discord#readme"
+	"name": "nw-idolfest-discord",
+	"version": "1.0.0",
+	"description": "Discord bot for NW IdolFest",
+	"main": "index.js",
+	"scripts": {
+		"lint": "eslint index.js",
+		"lint-fix": "eslint --fix index.js",
+		"format": "prettier . --write",
+		"prepare": "husky install"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/NWIdolFest/nw-idolfest-discord.git"
+	},
+	"author": "",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/NWIdolFest/nw-idolfest-discord/issues"
+	},
+	"homepage": "https://github.com/NWIdolFest/nw-idolfest-discord#readme",
+	"dependencies": {
+		"discord.js": "^13.1.0"
+	},
+	"devDependencies": {
+		"eslint": "^7.32.0",
+		"eslint-config-prettier": "^8.3.0",
+		"prettier": "^2.3.2",
+		"husky": "^7.0.0"
+	}
 }

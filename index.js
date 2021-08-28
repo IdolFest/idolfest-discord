@@ -1,5 +1,3 @@
-const helo = () => {
-	console.log(`Print`);;;;;
-}
+import { Discord } from "./lib/options.js"
 
-helo()
+console.log(`Discord: ${Discord.botToken}`)

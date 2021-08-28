@@ -1,0 +1,19 @@
+{
+  "name": "nw-idolfest-discord",
+  "version": "1.0.0",
+  "description": "Discord bot for NW IdolFest",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NWIdolFest/nw-idolfest-discord.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NWIdolFest/nw-idolfest-discord/issues"
+  },
+  "homepage": "https://github.com/NWIdolFest/nw-idolfest-discord#readme"
+}

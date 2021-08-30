@@ -1,0 +1,14 @@
+[Unit]
+Description=NW IdolFest Discord Bot
+Documentation=https://nwidolfest.com/
+After=network.target
+
+[Service]
+EnvironmentFile=/run/nwidolfest/discord/env
+Type=simple
+User=ubuntu
+ExecStart=/srv/node/bin/node /srv/nw-idolfest-discord/index.js
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

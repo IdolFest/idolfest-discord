@@ -1,21 +1,6 @@
-import discordClient from "./lib/discord.js"
-import { getRegistrationTable, getAllRecords } from "./lib/airtable.js"
+import { setupFeatures } from "./lib/features/all.js"
 
-const run = async () => {
-	const discord = await discordClient
-	const guilds = await discord.guilds.fetch()
-	console.log(`Guildy`, guilds)
-
-	const registrationTable = await getRegistrationTable()
-	const rows = await getAllRecords(
-		registrationTable.select({
-			view: `Grid view`,
-		})
-	)
-	console.log(`Table:`, rows)
-}
-
-run().then(
+setupFeatures().then(
 	() => {
 		process.exit(0)
 	},

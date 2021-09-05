@@ -1,10 +1,18 @@
-import getDiscordClient from "./lib/discord.js"
+import discordClient from "./lib/discord.js"
+import { getRegistrationTable, getAllRecords } from "./lib/airtable.js"
 
 const run = async () => {
-	const discord = await getDiscordClient()
+	const discord = await discordClient
 	const guilds = await discord.guilds.fetch()
-	guilds.each(guild => console.log(`GUILD '${guild.id}' named '${guild.name}':`, guild))
-	console.log(`Discord client is ready: `, guilds)
+	console.log(`Guildy`, guilds)
+
+	const registrationTable = await getRegistrationTable()
+	const rows = await getAllRecords(
+		registrationTable.select({
+			view: `Grid view`,
+		})
+	)
+	console.log(`Table:`, rows)
 }
 
 run().then(

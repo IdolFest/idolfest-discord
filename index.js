@@ -1,4 +1,4 @@
-import { setupFeatures } from "./lib/features/all.js"
+import { setupFeatures } from "./features/all.js"
 
 setupFeatures().then(
 	() => {

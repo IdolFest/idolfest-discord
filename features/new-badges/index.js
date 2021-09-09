@@ -30,7 +30,11 @@ const getMembersByName = async attendeeGuild => {
 const update = async () => {
 	const discord = await discordClient
 	const guilds = await discord.guilds.fetch()
-	const attendeeGuild = await guilds.get(discordAttendeeGuildID).fetch()
+	const attendeePartialGuild = await guilds.get(discordAttendeeGuildID)
+	if (!attendeePartialGuild) {
+		return
+	}
+	const attendeeGuild = await attendeePartialGuild.fetch()
 
 	const registrationTable = await getRegistrationTable()
 	const rows = await getAllRecords(

@@ -68,6 +68,9 @@ const update = async () => {
 				}
 			})
 			.filter(x => !!x)
+			.filter(({ member, role }) => {
+				return Array.from(member.roles.cache.keys()).indexOf(role.id) == -1
+			})
 			.map(({ member, role }) => {
 				return member.roles.add(role, `Added from bot at ${new Date().toLocaleString()}`)
 			})

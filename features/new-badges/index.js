@@ -1,6 +1,6 @@
 import discordClient from "../../lib/discord.js"
 import { getRegistrationTable, getAllRecords } from "../../lib/airtable.js"
-import { discordAttendeeGuildID } from "../../lib/options.js"
+import { discordAttendeeGuildID, discordAirtableBadgeMap } from "../../lib/options.js"
 
 const getRolesByName = async attendeeGuild => {
 	const attendeeRolesMap = await attendeeGuild.roles.fetch()
@@ -34,7 +34,7 @@ const update = async () => {
 	)
 	const matchingUsers = Array.from(rows).map(row => ({
 		discord: row.fields[`Discord Handle`],
-		badge: row.fields[`Badge Type`],
+		badge: discordAirtableBadgeMap[row.fields[`Badge Type`]],
 	}))
 
 	if (!matchingUsers || matchingUsers.length === 0) {

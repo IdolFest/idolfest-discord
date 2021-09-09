@@ -2,6 +2,12 @@ import discordClient from "../../lib/discord.js"
 import { getRegistrationTable, getAllRecords } from "../../lib/airtable.js"
 import { discordAttendeeGuildID, discordAirtableBadgeMap } from "../../lib/options.js"
 
+const Constants = {
+	DiscordRolesTable: `Discord Roles`,
+	DiscordHandleColumn: `Discord Handle`,
+	BadgeTypeColumn: `Badge Type`,
+}
+
 const getRolesByName = async attendeeGuild => {
 	const attendeeRolesMap = await attendeeGuild.roles.fetch()
 	const attendeeRoles = {}
@@ -29,12 +35,12 @@ const update = async () => {
 	const registrationTable = await getRegistrationTable()
 	const rows = await getAllRecords(
 		registrationTable.select({
-			view: `Discord Roles`,
+			view: Constants.DiscordRolesTable,
 		})
 	)
 	const matchingUsers = Array.from(rows).map(row => ({
-		discord: row.fields[`Discord Handle`],
-		badge: discordAirtableBadgeMap[row.fields[`Badge Type`]],
+		discord: row.fields[Constants.DiscordHandleColumn],
+		badge: discordAirtableBadgeMap[row.fields[Constants.BadgeTypeColumn]],
 	}))
 
 	if (!matchingUsers || matchingUsers.length === 0) {
@@ -77,10 +83,7 @@ const getDiscordEvents = async () => {
 }
 
 const updateTimer = async () => {
-	setInterval(() => {
-		console.log(`Updating from timer`)
-		update()
-	}, 1000 * 60)
+	setInterval(update, 1000 * 60)
 	return new Promise(() => {})
 }
 

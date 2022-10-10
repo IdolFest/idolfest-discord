@@ -15,7 +15,9 @@ const getPanelists = (discordEvent) => {
 }
 
 const getId = (discordEvent) => {
-	return discordEvent.description.split(`ID: `)[1].trim()
+	if (discordEvent.description) {
+		return discordEvent.description.split(`ID: `)[1].trim()
+	}
 }
 
 const createDescription = (scheduleEvent) => {

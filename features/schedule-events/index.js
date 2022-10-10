@@ -43,31 +43,36 @@ const buildDiscordEvent = (scheduleEvent) => {
 }
 
 const compareEvents = (scheduleEvent, discordEvent) => {
-	/*
-	console.log(convertScheduleTime(scheduleEvent.startTime) == 
-			discordEvent.scheduledStartTimestamp)
-	console.log(convertScheduleTime(scheduleEvent.endTime) == 
-			discordEvent.scheduledEndTimestamp)
-	console.log(scheduleEvent.title == discordEvent.name)
-	console.log(scheduleEvent.panelists == getPanelists(discordEvent))
-	console.log(scheduleEvent.description, getDescription(discordEvent), scheduleEvent.description == getDescription(discordEvent))
-	console.log(scheduleEvent.room == discordEvent.entityMetadata.location)
-	*/
 	if (
-		(
-			convertScheduleTime(scheduleEvent.startTime) == 
-			discordEvent.scheduledStartTimestamp
-		) &&
-		(
-			convertScheduleTime(scheduleEvent.endTime) == 
-			discordEvent.scheduledEndTimestamp
-		) &&
-		scheduleEvent.title == discordEvent.name &&
-		scheduleEvent.panelists == getPanelists(discordEvent) &&
-		scheduleEvent.description == getDescription(discordEvent) &&
-		scheduleEvent.room == discordEvent.entityMetadata.location
+		(convertScheduleTime(scheduleEvent.startTime) == discordEvent.scheduledStartTimestamp) && 
+		(convertScheduleTime(scheduleEvent.endTime) == discordEvent.scheduledEndTimestamp) &&
+		scheduleEvent.title.trim() == discordEvent.name &&
+		scheduleEvent.panelists.trim() == getPanelists(discordEvent) &&
+		scheduleEvent.description.trim() == getDescription(discordEvent) &&
+		scheduleEvent.room.trim() == discordEvent.entityMetadata.location
 	) {
 		return true
+	}
+
+	if (convertScheduleTime(scheduleEvent.startTime) != discordEvent.scheduledStartTimestamp) {
+		console.log(`Start time differs!`, convertScheduleTime(scheduleEvent.startTime), discordEvent.scheduledStartTimestamp)
+	}
+
+	if(convertScheduleTime(scheduleEvent.endTime) != discordEvent.scheduledEndTimestamp) {
+		console.log(`End time differs!`, convertScheduleTime(scheduleEvent.endTime), discordEvent.scheduledEndTimestamp)
+	}
+	if (scheduleEvent.title != discordEvent.name) {
+		console.log(`Title differs!`, scheduleEvent.title.trim(), discordEvent.name)
+	}
+	if (scheduleEvent.panelists != getPanelists(discordEvent)) {
+		console.log(`Panelists differ!`, scheduleEvent.panelists.trim(), getPanelists(discordEvent))
+	}
+
+	if (scheduleEvent.description.trim() != getDescription(discordEvent)) {
+		console.log(`Description differs!`, scheduleEvent.description.trim(), getDescription(discordEvent))
+	}
+	if (scheduleEvent.room != discordEvent.entityMetadata.location) {
+		console.log(`Room differs!`, scheduleEvent.room.trim(), discordEvent.entityMetadata.location)
 	}
 
 	return false

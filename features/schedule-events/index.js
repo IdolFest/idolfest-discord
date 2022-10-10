@@ -89,15 +89,23 @@ const update = async () => {
 		return
 	}
 	const attendeeGuild = await attendeePartialGuild.fetch()
-	const discordEvents = await attendeeGuild.scheduledEvents.fetch()
 
-	// get canonical schedule data
-	let scheduleEvents = await getEventsById()
-	scheduleEvents = scheduleEvents.events
+	const [discordEvents, scheduleEvents] = await Promise.all([
+		attendeeGuild.scheduledEvents.fetch(),
+		getEventsById().then(result => result.events)
+	])
 
-	discordEvents.map(async (discordEvent) => {
+	for (const discordEvent of discordEvents) { 
 		const eventId = getId(discordEvent)
+		if (!eventId) { 
+			console.log(`Unable to find ID for event ${discordEvent}!`)
+			return
+		}
 		const scheduleEvent = scheduleEvents[eventId]
+		if (!scheduleEvent) {
+			console.log(`Unable to find ${eventId} in schedule!`)
+			return
+		}
 		if (!compareEvents(scheduleEvent, discordEvent)) {
 			console.log(`Updating ${scheduleEvent.id} event...`)
 			await attendeeGuild.scheduledEvents.edit(
@@ -108,19 +116,19 @@ const update = async () => {
 		}
 		delete scheduleEvents[eventId]
 		return eventId
-	})
+	 }
 
 	console.log(`Creating ${Object.entries(scheduleEvents).length} new events`)
 
 	// go through and add any remaining new events
-	Object.entries(scheduleEvents).map(async ([id, scheduleEvent]) => {
-		console.log(`Creating event ${id}`)
-		await attendeeGuild.scheduledEvents.create(
-			buildDiscordEvent(scheduleEvent)
-		)
-	})
-
-	return
+	Promise.all(
+		Object.entries(scheduleEvents).map(async ([id, scheduleEvent]) => {
+			console.log(`Creating event ${id}`)
+			await attendeeGuild.scheduledEvents.create(
+				buildDiscordEvent(scheduleEvent)
+			)
+		})
+	)
 }
 
 const updateTimer = async () => {

@@ -116,19 +116,14 @@ const update = async () => {
 	return
 }
 
-const getDiscordEvents = async () => {
-	return new Promise(() => { })
-}
-
 const updateTimer = async () => {
 	setInterval(update, 1000 * 60 * 15)
 	return new Promise(() => { })
 }
 
-const run = () => Promise.all([update(), getDiscordEvents(), updateTimer()])
+const run = () => Promise.all([update(), updateTimer()])
 
 export default run
-
 
 /*
 schedule data example

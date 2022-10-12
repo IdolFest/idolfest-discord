@@ -94,27 +94,24 @@ const update = async () => {
 		getEventsById().then(result => result.events)
 	])
 
-	for (const discordEvent of discordEvents) { 
+	for (const [discordEventId, discordEvent] of discordEvents) { 
 		const eventId = getId(discordEvent)
 		if (!eventId) { 
-			console.log(`Unable to find ID for event ${discordEvent}!`)
-			return
+			console.log(`Unable to find ID for event ${discordEventId}!`)
+			continue
 		}
 		const scheduleEvent = scheduleEvents[eventId]
 		if (!scheduleEvent) {
 			console.log(`Unable to find ${eventId} in schedule!`)
-			return
+			continue
 		}
 		if (!compareEvents(scheduleEvent, discordEvent)) {
 			console.log(`Updating ${scheduleEvent.id} event...`)
 			await attendeeGuild.scheduledEvents.edit(
 				discordEvent, buildDiscordEvent(scheduleEvent)
 			)
-		} else {
-			console.log(`${scheduleEvent.id} event is up to date`)
 		}
 		delete scheduleEvents[eventId]
-		return eventId
 	 }
 
 	console.log(`Creating ${Object.entries(scheduleEvents).length} new events`)

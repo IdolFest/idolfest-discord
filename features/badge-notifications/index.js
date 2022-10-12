@@ -13,13 +13,11 @@ const Constants = {
 const update = async () => {
 	const discord = await discordClient
 
-	const channel = await discord.channels.cache.get(discordBadgeChannelId)
+	const channel = await discord.channels.fetch(discordBadgeChannelId)
 
-	const lastBadgeId = await channel.messages.fetch({ limit: 1 }).then(messages => {
-		const lastMessage = messages.first().content
-		return lastMessage.split(`ID: `)[1]?.trim()
-	})
-
+	const messages = await channel.messages.fetch({ limit: 1 })
+	const lastBadgeId = messages.first().content.split(`ID: `)[1]?.trim()
+	
 	if (!lastBadgeId) {
 		console.log(`ERROR: Please ensure the last message in the channel has a badge ID!`)
 		return

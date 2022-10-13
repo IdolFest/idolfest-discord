@@ -16,7 +16,7 @@ const getPanelists = (discordEvent) => {
 
 const getId = (discordEvent) => {
 	if (!discordEvent.description) { return null } 
-	return discordEvent.description.split(`ID: `)[1].trim()
+	return discordEvent.description.split(`ID: `)[1]?.trim()
 }
 
 const createDescription = (scheduleEvent) => {
@@ -95,24 +95,28 @@ const update = async () => {
 	])
 
 	for (const [discordEventId, discordEvent] of discordEvents) { 
-		const eventId = getId(discordEvent)
-		if (!eventId) { 
-			console.log(`Unable to find ID for event ${discordEventId}!`)
-			continue
+		try {
+			const eventId = getId(discordEvent)
+			if (!eventId) { 
+				console.log(`Unable to find ID for event ${discordEventId}!`)
+				continue
+			}
+			const scheduleEvent = scheduleEvents[eventId]
+			if (!scheduleEvent) {
+				console.log(`Unable to find ${eventId} in schedule!`)
+				continue
+			}
+			if (!compareEvents(scheduleEvent, discordEvent)) {
+				console.log(`Updating ${scheduleEvent.id} event...`)
+				await attendeeGuild.scheduledEvents.edit(
+					discordEvent, buildDiscordEvent(scheduleEvent)
+				)
+			}
+			delete scheduleEvents[eventId]
+		} catch (error) {
+			console.log(`Error in ${discordEvent}! ${error}`)
 		}
-		const scheduleEvent = scheduleEvents[eventId]
-		if (!scheduleEvent) {
-			console.log(`Unable to find ${eventId} in schedule!`)
-			continue
-		}
-		if (!compareEvents(scheduleEvent, discordEvent)) {
-			console.log(`Updating ${scheduleEvent.id} event...`)
-			await attendeeGuild.scheduledEvents.edit(
-				discordEvent, buildDiscordEvent(scheduleEvent)
-			)
-		}
-		delete scheduleEvents[eventId]
-	 }
+	}
 
 	console.log(`Creating ${Object.entries(scheduleEvents).length} new events`)
 

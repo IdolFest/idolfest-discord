@@ -118,17 +118,21 @@ const update = async () => {
 		}
 	}
 
-	console.log(`Creating ${Object.entries(scheduleEvents).length} new events`)
-
 	// go through and add any remaining new events
 	Promise.all(
 		Object.entries(scheduleEvents).map(async ([id, scheduleEvent]) => {
+			// skip creating events in the past
+			// Discord will error
+			if (convertScheduleTime(scheduleEvent.startTime) < new Date()) {
+				return
+			}
 			console.log(`Creating event ${id}`)
 			await attendeeGuild.scheduledEvents.create(
 				buildDiscordEvent(scheduleEvent)
 			)
 		})
 	)
+	//console.log(`Created ${eventsCreated} new events`)
 }
 
 const updateTimer = async () => {

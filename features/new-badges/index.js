@@ -27,7 +27,7 @@ const getMembersByName = async attendeeGuild => {
 	return attendeeMembers
 }
 
-const update = async () => {
+const update = async (event) => {
 	const discord = await discordClient
 	const guilds = await discord.guilds.fetch()
 	const attendeePartialGuild = await guilds.get(discordAttendeeGuildID)
@@ -36,7 +36,7 @@ const update = async () => {
 	}
 	const attendeeGuild = await attendeePartialGuild.fetch()
 
-	const registrationTable = await getRegistrationTable()
+	const registrationTable = await getRegistrationTable(event)
 	const rows = await getAllRecords(
 		registrationTable.select({
 			view: Constants.DiscordRolesTable,
@@ -44,8 +44,9 @@ const update = async () => {
 	)
 	const matchingUsers = Array.from(rows).map(row => ({
 		discord: row.fields[Constants.DiscordHandleColumn],
-		badge: discordAirtableBadgeMap[row.fields[Constants.BadgeTypeColumn]],
+		badge: discordAirtableBadgeMap[`${event.toUpperCase()} ${row.fields[Constants.BadgeTypeColumn]}`]
 	}))
+
 
 	if (!matchingUsers || matchingUsers.length === 0) {
 		return
@@ -77,23 +78,27 @@ const update = async () => {
 	)
 }
 
-const getDiscordEvents = async () => {
+const getDiscordEvents = async (event) => {
+	const thisUpdate = () => update(event)
 	const client = await discordClient
-	client.on(`guildMemberAdd`, update)
-	client.on(`guildMemberUpdate`, update)
-	client.on(`guildMemberRemove`, update)
-	client.on(`guildMemberChunk`, update)
-	client.on(`roleCreate`, update)
-	client.on(`roleDelete`, update)
-	client.on(`roleUpdate`, update)
+	client.on(`guildMemberAdd`, thisUpdate)
+	client.on(`guildMemberUpdate`, thisUpdate)
+	client.on(`guildMemberRemove`, thisUpdate)
+	client.on(`guildMemberChunk`, thisUpdate)
+	client.on(`roleCreate`, thisUpdate)
+	client.on(`roleDelete`, thisUpdate)
+	client.on(`roleUpdate`, thisUpdate)
 	return new Promise(() => {})
 }
 
-const updateTimer = async () => {
-	setInterval(update, 1000 * 60)
+const updateTimer = async (event) => {
+	setInterval(() => update(event), 1000 * 60)
 	return new Promise(() => {})
 }
 
-const run = () => Promise.all([update(), getDiscordEvents(), updateTimer()])
+const run = () => Promise.all([
+	update('nwif'), getDiscordEvents('nwif'), updateTimer('nwif'),
+	update('scif'), getDiscordEvents('scif'), updateTimer('scif')
+])
 
 export default run

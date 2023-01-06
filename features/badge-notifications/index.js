@@ -14,7 +14,7 @@ const update = async (event) => {
 
 	let discordBadgeChannelId = discordBadgeChannelIdNwif
 
-	if (event.toLowerCase() === 'nwif') {
+	if (event.toLowerCase() === 'scif') {
 		discordBadgeChannelId = discordBadgeChannelIdScif
 	}
 

@@ -8,7 +8,8 @@
 		"lint": "eslint index.js",
 		"lint-fix": "eslint --fix index.js",
 		"format": "prettier . --write",
-		"prepare": "husky install"
+		"prepare": "husky install",
+		"start": "node ./index.js"
 	},
 	"repository": {
 		"type": "git",

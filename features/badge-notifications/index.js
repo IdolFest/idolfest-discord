@@ -1,6 +1,6 @@
 import discordClient from "../../lib/discord.js"
 import { getRegistrationTable, getAllRecords } from "../../lib/airtable.js"
-import { discordBadgeChannelId } from "../../lib/options.js"
+import { discordBadgeChannelIdNwif, discordBadgeChannelIdScif, nodeEnv } from "../../lib/options.js"
 
 const Constants = {
 	PaidBadgesTable: `Paid Badges Only`,
@@ -10,7 +10,14 @@ const Constants = {
 	IdColumn: `ID`,
 }
 
-const update = async () => {
+const update = async (event) => {
+
+	let discordBadgeChannelId = discordBadgeChannelIdNwif
+
+	if (event.toLowerCase() === 'nwif') {
+		discordBadgeChannelId = discordBadgeChannelIdScif
+	}
+
 	const discord = await discordClient
 
 	const channel = await discord.channels.fetch(discordBadgeChannelId)
@@ -23,7 +30,7 @@ const update = async () => {
 		return
 	}
 
-	const registrationTable = await getRegistrationTable()
+	const registrationTable = await getRegistrationTable(event)
 	const rows = await getAllRecords(
 		registrationTable.select({
 			fields: [
@@ -42,16 +49,17 @@ const update = async () => {
 	)
 
 	rows.map((badge) => {
-		const message = `🎉🎉🎉 WE JUST SOLD A BADGE!\nBadge type: ${badge.fields[Constants.BadgeTypeColumn]}\nAttendee country: ${badge.fields[Constants.CountryColumn]}\nHow did they hear about us??: ${badge.fields[Constants.HowHeardColumn] || ``}\n_ID: ${badge.fields[Constants.IdColumn]}_`
+		const possibleWarning = nodeEnv === 'development' ? '⚠️ BOT TEST ⚠️\n\n' : ''
+		const message = possibleWarning + `🎉🎉🎉 WE JUST SOLD A ${event.toUpperCase()} BADGE!\nBadge type: ${badge.fields[Constants.BadgeTypeColumn]}\nAttendee country: ${badge.fields[Constants.CountryColumn]}\nHow did they hear about us??: ${badge.fields[Constants.HowHeardColumn] || ``}\n_ID: ${badge.fields[Constants.IdColumn]}_`
 		channel.send(message)
 	})
 }
 
-const updateTimer = async () => {
-	setInterval(update, 1000 * 60)
+const updateTimer = async (event) => {
+	setInterval(() => update(event), 1000 * 60)
 	return new Promise(() => {})
 }
 
-const run = () => Promise.all([update(), updateTimer()])
+const run = () => Promise.all([update('nwif'), updateTimer('nwif'), update('scif'), updateTimer('scif')])
 
 export default run

@@ -42,10 +42,13 @@ const update = async (event) => {
 			view: Constants.DiscordRolesTable,
 		})
 	)
-	const matchingUsers = Array.from(rows).map(row => ({
-		discord: row.fields[Constants.DiscordHandleColumn],
-		badge: discordAirtableBadgeMap[`${event.toUpperCase()} ${row.fields[Constants.BadgeTypeColumn]}`]
-	}))
+	const matchingUsers = Array.from(rows).map(row => {
+		const discord = row.fields[Constants.DiscordHandleColumn]
+		return {
+			discord: discord.indexOf('#') === -1 ? `${discord}#0` : discord,
+			badge: discordAirtableBadgeMap[`${event.toUpperCase()} ${row.fields[Constants.BadgeTypeColumn]}`]
+		}
+	})
 
 
 	if (!matchingUsers || matchingUsers.length === 0) {

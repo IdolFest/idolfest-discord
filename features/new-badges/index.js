@@ -1,5 +1,5 @@
 import discordClient from "../../lib/discord.js"
-import { getRegistrationTable, getAllRecords } from "../../lib/airtable.js"
+import { getAllRegistrationRecords } from "../../lib/nocodb.js"
 import { discordAttendeeGuildID, discordAirtableBadgeMap } from "../../lib/options.js"
 
 const Constants = {
@@ -36,17 +36,12 @@ const update = async (event) => {
 	}
 	const attendeeGuild = await attendeePartialGuild.fetch()
 
-	const registrationTable = await getRegistrationTable(event)
-	const rows = await getAllRecords(
-		registrationTable.select({
-			view: Constants.DiscordRolesTable,
-		})
-	)
-	const matchingUsers = Array.from(rows).map(row => {
-		const discord = row.fields[Constants.DiscordHandleColumn]
+	const rows = await getAllRegistrationRecords()
+	const matchingUsers = rows.map(row => {
+		const discord = row[Constants.DiscordHandleColumn] ?? ''
 		return {
 			discord: discord.indexOf('#') === -1 ? `${discord}#0` : discord,
-			badge: discordAirtableBadgeMap[`${event.toUpperCase()} ${row.fields[Constants.BadgeTypeColumn]}`]
+			badge: discordAirtableBadgeMap[`${event.toUpperCase()} ${row[Constants.BadgeTypeColumn]}`]
 		}
 	})
 

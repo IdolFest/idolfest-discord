@@ -21,13 +21,57 @@ const getId = (discordEvent) => {
 
 const createDescription = (scheduleEvent) => {
 	let description = scheduleEvent.description
+	const list = getProhibitedList(scheduleEvent)
+	if (list && list.length) {
+		description += '\n\n**Prohibited**:'
+		list.forEach(prohib => {
+			description += '\n* ' + prohib
+		})
+	}
 	if (scheduleEvent.panelists) {
 		description += `\n\nPanelists: ${scheduleEvent.panelists}`
 	}
+
 	description += `\n\nID: ${scheduleEvent.id}`
 
 	return description
 }
+
+function getProhibitedList(panel) {
+	let list = []
+  
+	switch (panel.callMix.toLowerCase()) {
+	  case 'all':
+		// Nothing!
+		break
+	  case 'calls only':
+		list.push('Mix (calls are okay!)')
+		break
+	  case 'none':
+		list.push('Calls and mix')
+		break
+	}
+  
+	switch (panel.recording.toLowerCase()) {
+	  case 'all':
+		// Nothing!
+		break
+	  case 'photos':
+		list.push('Recorded video (pictures are okay!)')
+		break
+	  case 'videos': 
+		// ... really?
+		list.push('Recorded photos (video okay)')
+		break
+	  case 'none':
+		list.push('Video recording and photos')
+		break
+	}
+  
+	return list
+  
+  }
+  
 
 const buildDiscordEvent = (scheduleEvent) => {
 	return ({

@@ -1,5 +1,5 @@
 import discordClient from "../../lib/discord.js"
-import { discordAttendeeGuildID } from "../../lib/options.js"
+import { discordAttendeeGuildID, scheduleSyncEnabled } from "../../lib/options.js"
 import { getEventsById } from "../../lib/schedule.js"
 
 const convertScheduleTime = (datetime) => {
@@ -124,6 +124,9 @@ const compareEvents = (scheduleEvent, discordEvent) => {
 }
 
 const update = async () => {
+	if (!scheduleSyncEnabled) {
+		return
+	}
 	const discord = await discordClient
 	const guilds = await discord.guilds.fetch()
 

@@ -3,7 +3,8 @@ import { getAllRegistrationRecords } from "../../lib/nocodb.js"
 import { discordStaffGuildID, discordBadgeStatsChannelId, discordBadgeStatsChannelId2 } from "../../lib/options.js"
 
 const Constants = {
-	BadgeTypeColumn: "Badge Type"
+	BadgeTypeColumn: "Badge Type",
+	PaymentTypeColumn: "Payment Type"
 }
 
 const update = async (event) => {
@@ -25,7 +26,9 @@ const update = async (event) => {
 		"Super Sponsor": 0
 	}
 	rows.forEach(row => {
-		if (typeof allCounts[row[Constants.BadgeTypeColumn]] !== 'undefined') {
+		if (typeof allCounts[row[Constants.BadgeTypeColumn]] !== 'undefined' && 
+			row[Constants.PaymentTypeColumn] !== "Comped"
+		) {
 			++allCounts[row[Constants.BadgeTypeColumn]]
 		}
 	})

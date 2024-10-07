@@ -1,6 +1,6 @@
 import discordClient from "../../lib/discord.js"
 import { getAllRegistrationRecords } from "../../lib/nocodb.js"
-import { discordAttendeeGuildID, discordBadgeStatsChannelId, discordBadgeStatsChannelId2 } from "../../lib/options.js"
+import { discordStaffGuildID, discordBadgeStatsChannelId, discordBadgeStatsChannelId2 } from "../../lib/options.js"
 
 const Constants = {
 	BadgeTypeColumn: "Badge Type"
@@ -9,11 +9,11 @@ const Constants = {
 const update = async (event) => {
 	const discord = await discordClient
 	const guilds = await discord.guilds.fetch()
-	const attendeePartialGuild = await guilds.get(discordAttendeeGuildID)
-	if (!attendeePartialGuild) {
+	const staffPartialGuild = await guilds.get(discordStaffGuildID)
+	if (!staffPartialGuild) {
 		return
 	}
-	const attendeeGuild = await attendeePartialGuild.fetch()
+	const staffGuild = await staffPartialGuild.fetch()
 	
 
 	const rows = await getAllRegistrationRecords()
@@ -29,8 +29,8 @@ const update = async (event) => {
 			++allCounts[row[Constants.BadgeTypeColumn]]
 		}
 	})
-	attendeeGuild.channels.resolve(discordBadgeStatsChannelId).setName(`Slv: ${allCounts.Attendee} - Gld: ${allCounts.Sponsor} - Pr: ${allCounts["Super Sponsor"]}`)
-	attendeeGuild.channels.resolve(discordBadgeStatsChannelId2).setName(`Child: ${allCounts["6 to 12"]} - Spirit: ${allCounts.Spirit}`)
+	staffGuild.channels.resolve(discordBadgeStatsChannelId).setName(`Slv: ${allCounts.Attendee} - Gld: ${allCounts.Sponsor} - Pr: ${allCounts["Super Sponsor"]}`)
+	staffGuild.channels.resolve(discordBadgeStatsChannelId2).setName(`Child: ${allCounts["6 to 12"]} - Spirit: ${allCounts.Spirit}`)
 
 
 }

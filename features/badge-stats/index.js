@@ -1,6 +1,6 @@
 import discordClient from "../../lib/discord.js"
 import { getAllRegistrationRecords } from "../../lib/nocodb.js"
-import { discordStaffGuildID, discordBadgeStatsChannelId, discordBadgeStatsChannelId2 } from "../../lib/options.js"
+import { discordStaffGuildID, discordBadgeStatsChannelId, discordBadgeStatsChannelId2, discordBadgeStatsChannelId3 } from "../../lib/options.js"
 
 const Constants = {
 	BadgeTypeColumn: "Badge Type",
@@ -23,7 +23,10 @@ const update = async (event) => {
 		"Attendee": 0,
 		"Spirit": 0,
 		"Sponsor": 0, 
-		"Super Sponsor": 0
+		"Super Sponsor": 0,
+		"Day Badge: Friday": 0,
+		"Day Badge: Saturday": 0,
+		"Day Badge: Sunday": 0
 	}
 	rows.forEach(row => {
 		if (typeof allCounts[row[Constants.BadgeTypeColumn]] !== 'undefined' && 
@@ -33,7 +36,8 @@ const update = async (event) => {
 		}
 	})
 	staffGuild.channels.resolve(discordBadgeStatsChannelId).setName(`Slv: ${allCounts.Attendee} - Gld: ${allCounts.Sponsor} - Pr: ${allCounts["Super Sponsor"]}`)
-	staffGuild.channels.resolve(discordBadgeStatsChannelId2).setName(`Child: ${allCounts["6 to 12"]} - Spirit: ${allCounts.Spirit}`)
+	staffGuild.channels.resolve(discordBadgeStatsChannelId2).setName(`Fri: ${allCounts["Day Badge: Friday"]} - Sat: ${allCounts["Day Badge: Saturday"]} - Sun: ${allCounts["Day Badge: Sunday"]}`)
+	staffGuild.channels.resolve(discordBadgeStatsChannelId3).setName(`Child: ${allCounts["6 to 12"]} - Spirit: ${allCounts.Spirit}`)
 
 
 }

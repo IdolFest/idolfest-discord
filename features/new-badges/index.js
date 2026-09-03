@@ -1,3 +1,4 @@
+import axios from "axios"
 import discordClient from "../../lib/discord.js"
 import { getAllRegistrationRecords } from "../../lib/nocodb.js"
 import { discordAttendeeGuildID, discordAirtableBadgeMap } from "../../lib/options.js"
@@ -53,7 +54,7 @@ const update = async (event) => {
 	const roles = await getRolesByName(attendeeGuild)
 	const members = await getMembersByName(attendeeGuild)
 
-	return Promise.all(
+	const res = Promise.all(
 		matchingUsers
 			.map(user => {
 				const member = members[user.discord]
@@ -74,6 +75,13 @@ const update = async (event) => {
 				return member.roles.add(role, `Added from bot at ${new Date().toLocaleString()}`)
 			})
 	)
+	// Wait for all promises to resolve, so we can know the status
+	await res;
+
+	// Upon completion, send a heartbeat to ilert to note this process is running.
+	// If this stops, we get alerted and know the process (or at least this part) is down.
+	axios.get("https://beat.ilert.com/api/pings/ih2:900:idolfest:oekgawjswxei:7d5e5feed7569f7d22b2ccb8eca66b3278958f6f")
+	return res;
 }
 
 const getDiscordEvents = async (event) => {
@@ -95,8 +103,9 @@ const updateTimer = async (event) => {
 }
 
 const run = () => Promise.all([
-	update('nwif'), getDiscordEvents('nwif'), updateTimer('nwif'),
-	update('scif'), getDiscordEvents('scif'), updateTimer('scif')
+	update('nwif'), getDiscordEvents('nwif'), updateTimer('nwif')
+	// SCIF is long-since dead, don't waste resources on it.
+	// update('scif'), getDiscordEvents('scif'), updateTimer('scif')
 ])
 
 export default run

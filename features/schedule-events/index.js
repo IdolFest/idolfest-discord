@@ -21,6 +21,7 @@ const getId = (discordEvent) => {
 
 const createDescription = (scheduleEvent) => {
 	let description = scheduleEvent.description
+	if (description.length > 800) { description = description.substring(0, 800) + "..."; }
 	const list = getProhibitedList(scheduleEvent)
 	if (list && list.length) {
 		description += '\n\n**Prohibited**:'
